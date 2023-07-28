@@ -1,7 +1,4 @@
-const { Log } = require("../../database/models");
-const { encrypt } = require("../../utils/cryptography");
-
-const deleteEntity = async (model, finders, identifiers, table) => {
+const deleteEntity = async (model, finders) => {
   try {
     const foundEntity = await model.findOne({
       where: {
@@ -12,17 +9,6 @@ const deleteEntity = async (model, finders, identifiers, table) => {
     if (!foundEntity) {
       throw new Error({ message: 'Entidade não encontrada', status: 404 });
     }
-
-    const encryptedEntity = encrypt(JSON.stringify(foundEntity.dataValues));
-
-    const details = JSON.stringify({ deleted: encryptedEntity });
-
-    await Log.create({
-      ...identifiers,
-      details,
-      action: 'delete',
-      table
-    });
 
     await foundEntity.destroy();
 

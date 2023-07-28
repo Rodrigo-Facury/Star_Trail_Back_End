@@ -14,15 +14,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Rodrigo-Facury/ToComply.git"
+    "url": "git+https://github.com/Rodrigo-Facury/star_trail_back_express.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Rodrigo-Facury/ToComply/issues"
+    "url": "https://github.com/Rodrigo-Facury/star_trail_back_express/issues"
   },
-  "homepage": "https://github.com/Rodrigo-Facury/ToComply#readme",
+  "homepage": "https://github.com/Rodrigo-Facury/star_trail_back_express#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
