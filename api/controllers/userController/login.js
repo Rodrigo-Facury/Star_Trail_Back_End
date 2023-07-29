@@ -1,29 +1,18 @@
 const bcrypt = require('bcrypt');
 const { User } = require('../../../database/models');
-const { Role } = require('../../../database/models');
-const { WebsiteModule } = require('../../../database/models');
 const createToken = require('../../services/createToken');
 
 async function login(req, res, next) {
   try {
-    const { body: { email, password } } = req;
+    const { body: { emailOrUsername, password } } = req;
 
     const user = await User.findOne({
       where: {
-        email
-      },
-      include: [{
-        model: Role,
-        as: 'roles',
-        through: { attributes: [] },
-        attributes: ['name'],
-        include: [{
-          model: WebsiteModule,
-          as: 'modules',
-          through: { attributes: [] },
-          attributes: ['name']
-        }]
-      }]
+        [Op.or]: [
+          { email: emailOrUsername },
+          { username: emailOrUsername }
+        ]
+      }
     });
 
     let correctPassword;
@@ -39,21 +28,6 @@ async function login(req, res, next) {
     }
 
     const userInfo = user.dataValues;
-
-    const roles = new Array();
-
-    const modules = new Set();
-
-    userInfo.roles.forEach(({ modules: roleModules, name }) => {
-      roles.push(name);
-      roleModules.forEach((module) => {
-        modules.add(module.name);
-      });
-    });
-
-    userInfo.roles = roles;
-
-    userInfo.permissions = [...modules.values()];
 
     const token = createToken(userInfo);
 

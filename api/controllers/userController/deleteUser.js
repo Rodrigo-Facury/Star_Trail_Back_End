@@ -3,10 +3,9 @@ const deleteEntity = require('../../services/deleteEntity');
 
 async function deleteUser(req, res, next) {
   try {
-    const { id } = req.params;
-    const { user: { id: userId, companyId: clientId } } = req;
+    const { id } = req.user;
 
-    await deleteEntity(User, { id }, { userId, clientId }, 'Users');
+    await deleteEntity(User, { id });
 
     return res.status(204).json({ message: 'Usuário deletado com sucesso!' });
   } catch (err) {

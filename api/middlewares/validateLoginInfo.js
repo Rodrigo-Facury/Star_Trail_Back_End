@@ -1,29 +1,21 @@
+const { RegExHelper } = require("../../helpers/regex.helper");
+
 function validateLoginInfo(req, res, next) {
   try {
-    const { body: { email, password } } = req;
+    const { body: { emailOrUsername, password } } = req;
 
-    if (!email) {
-      return res.status(400).json({ message: '"Email" é um campo obrigatório.' });
+    if (!emailOrUsername) {
+      return res.status(400).json({ message: '"Email ou username" é um campo obrigatório.' });
     }
 
     if (!password) {
       return res.status(400).json({ message: '"Senha" é um campo obrigatório.' });
     }
 
-    const validateEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const validEmailOrUsername = RegExHelper.email.test(emailOrUsername) || RegExHelper.username.test(emailOrUsername);
+    const validPassword = RegExHelper.password.test(password);
 
-    function validatePassword(password) {
-      if (password.length < 8 || password === password.toLowerCase()) {
-        return false;
-      }
-
-      return true;
-    }
-
-    const validEmail = validateEmail.test(email);
-    const validPassword = validatePassword(password);
-
-    if (!validEmail || !validPassword) {
+    if (!validEmailOrUsername || !validPassword) {
       return res.status(400).json({ message: 'Email ou Senha em formato incorreto.' });
     }
 

@@ -1,24 +1,31 @@
-const { Op } = require('sequelize');
 const { User } = require('../../../database/models');
 
-async function getUsers(_req, res, next) {
+async function getFollowed(req, res, next) {
+  const { id } = req.user;
+
   try {
-    const users = await User.findAll({
-      where: {
-        companyId: 1,
-        [Op.or]: [
-          { status: { [Op.not]: 'del' } },
-          { status: 'Ativo' },
-          { status: 'Inativo' }
-        ]
-      },
+    const user = await User.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          as: 'Following',
+          attributes: { exclude: 'password' }
+        }
+      ],
       attributes: { exclude: 'password' }
     });
 
-    return res.status(200).json({ users: users.map(({ dataValues }) => dataValues), message: 'Usuários encontrados!' });
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado!' });
+    }
+
+    const followed = user.Following;
+
+    return res.status(200).json({ followed, message: 'Perfis seguidos encontrados!' });
   } catch (err) {
     return next(err);
   }
 }
 
-module.exports = getUsers;
+module.exports = getFollowed;
