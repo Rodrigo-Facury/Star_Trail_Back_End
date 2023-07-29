@@ -17,7 +17,7 @@ router.put('/', validateToken, updateUser);
 
 router.put('/password', validateToken, resetPassword);
 
-router.delete('/:id', validateToken, deleteUser);
+router.delete('/', validateToken, deleteUser);
 
 router.get('/followed', validateToken, getFollowed);
 
