@@ -4,23 +4,13 @@ async function getFollowers(req, res, next) {
   const { id } = req.user;
 
   try {
-    const user = await User.findOne({
-      where: { id },
-      include: [
-        {
-          model: User,
-          as: 'Followers',
-          attributes: { exclude: 'password' }
-        }
-      ],
-      attributes: { exclude: 'password' }
-    });
+    const user = await User.findByPk(id);
 
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado!' });
     }
 
-    const followers = user.Followers;
+    const followers = await user.getFollowers({ attributes: { exclude: 'password' } });
 
     return res.status(200).json({ followers, message: 'Seguidores encontrados!' });
   } catch (err) {

@@ -1,17 +1,34 @@
-const { Company } = require('../../../database/models');
-const deleteEntity = require('../../services/deleteEntity');
+const { Trail, Step } = require('../../../database/models');
 
-async function deleteCompany(req, res, next) {
+async function deleteTrail(req, res, next) {
+  const trailId = req.params.trailId;
+  const userId = req.user.id;
+
   try {
-    const { id } = req.params;
-    const { user: { id: userId, companyId: clientId } } = req;
+    const trail = await Trail.findByPk(trailId, {
+      include: [Step],
+    });
 
-    await deleteEntity(Company, { id }, { userId, clientId }, 'Companies');
+    if (!trail) {
+      return res.status(404).json({ message: 'Trilha não encontrada!' });
+    }
 
-    return res.status(204).json({ message: 'Cliente deletado com sucesso!' });
+    if (trail.userId !== userId) {
+      return res.status(403).json({ message: 'Acesso não autorizado! Você não é o proprietário desta trilha.' });
+    }
+
+    await Step.destroy({
+      where: {
+        trailId,
+      },
+    });
+
+    await trail.destroy();
+
+    return res.status(200).json({ message: 'Trilha excluída com sucesso!' });
   } catch (err) {
     return next(err);
   }
 }
 
-module.exports = deleteCompany;
+module.exports = deleteTrail;

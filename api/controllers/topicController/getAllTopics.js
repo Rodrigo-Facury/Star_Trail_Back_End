@@ -1,24 +1,15 @@
-const { Op } = require('sequelize');
-const { User } = require('../../../database/models');
+const { Topic } = require('../../../database/models');
 
-async function getUsers(_req, res, next) {
+async function getAllTopics(req, res, next) {
   try {
-    const users = await User.findAll({
-      where: {
-        companyId: 1,
-        [Op.or]: [
-          { status: { [Op.not]: 'del' } },
-          { status: 'Ativo' },
-          { status: 'Inativo' }
-        ]
-      },
-      attributes: { exclude: 'password' }
+    const topics = await Topic.findAll({
+      attributes: ['id', 'name'],
     });
 
-    return res.status(200).json({ users: users.map(({ dataValues }) => dataValues), message: 'Usuários encontrados!' });
+    return res.status(200).json({ topics, message: 'Todos os tópicos foram recuperados com sucesso!' });
   } catch (err) {
     return next(err);
   }
 }
 
-module.exports = getUsers;
+module.exports = getAllTopics;

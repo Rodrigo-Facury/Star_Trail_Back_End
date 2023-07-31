@@ -1,35 +1,51 @@
-const { Company } = require('../../../database/models');
-const { UserClient } = require('../../../database/models');
+const { Topic, Trail, Step } = require('../../../database/models');
+const { Op } = require('sequelize');
 
-async function postCompany(req, res, next) {
+function normalizeTopicName(topicName) {
+  return topicName.toLowerCase().replace(/[^\w\s]/gi, '').trim();
+}
+
+async function postTrail(req, res, next) {
+  const { title, steps, topics } = req.body;
+
   try {
-    const company = req.body;
+    const normalizedTopics = topics.map((topic) => normalizeTopicName(topic));
 
-    const createdCompany = await Company.create({
-      ...company,
-      ...(
-        company.economicActivityCodes
-        &&
-        {
-          economicActivityCodes: JSON.stringify(company.economicActivityCodes)
-        }
-      ),
-      status: 'client'
+    const existingTopics = await Topic.findAll({
+      where: {
+        name: {
+          [Op.in]: normalizedTopics,
+        },
+      },
     });
 
-    if (company.usersInCharge) {
-      company.usersInCharge.forEach(async (user) => {
-        await UserClient.create({
-          userId: user,
-          clientId: createdCompany.id
-        });
-      });
-    }
+    const newTopics = normalizedTopics.filter((topic) => !existingTopics.some((existingTopic) => existingTopic.name === topic));
 
-    return res.status(201).json({ message: 'Empresa registrada com sucesso.' });
+    const createdTopics = await Topic.bulkCreate(
+      newTopics.map((topic) => ({ name: topic }))
+    );
+
+    const allTopics = [...existingTopics, ...createdTopics];
+
+
+    const trail = await Trail.create({ title });
+
+    await Step.bulkCreate(
+      steps.map((step) => ({
+        description: step.description,
+        position: step.position,
+        trailId: trail.id,
+      }))
+    );
+
+    await trail.addTopics(allTopics);
+
+    return res.status(201).json({ trail, message: 'Trilha criada com sucesso!' });
+
   } catch (err) {
-    next(err);
+    return next(err);
   }
-};
+}
 
-module.exports = postCompany;
+module.exports = postTrail;
+

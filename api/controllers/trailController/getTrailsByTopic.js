@@ -1,26 +1,21 @@
-const { Op } = require('sequelize');
-const { Company } = require('../../../database/models');
-const { User } = require('../../../database/models');
+const { Topic } = require('../../../database/models');
 
-async function getClients(_req, res, next) {
+async function getTrailsByTopic(req, res, next) {
+  const topicId = req.params.topicId;
+
   try {
-    const clients = await Company.findAll({
-      where: {
-        status: 'client'
-      },
-      include: [{
-        model: User,
-        as: 'users',
-        through: { attributes: [] },
-        attributes: ['id', 'name', 'email', 'phoneNumber']
-      }]
-    });
+    const topic = await Topic.findByPk(topicId);
 
-    return res.status(200).json({ clients: clients.map(({ dataValues }) => dataValues), message: 'Clientes encontrados!' });
+    if (!topic) {
+      return res.status(404).json({ message: 'Tópico não encontrado!' });
+    }
+
+    const trails = await topic.getTrails();
+
+    return res.status(200).json({ trails, message: 'Trilhas encontradas para o tópico específico!' });
   } catch (err) {
-    console.error(err);
     return next(err);
   }
 }
 
-module.exports = getClients;
+module.exports = getTrailsByTopic;

@@ -1,20 +1,26 @@
 const { User } = require('../../../database/models');
 
 async function updateUser(req, res, next) {
+  const userId = req.user.id;
+  const { firstName, lastName, userName, aboutMe, profilePicturePath } = req.body;
+
   try {
-    const userChanges = req.body;
-    const { id } = req.user;
+    const user = await User.findByPk(userId);
 
-    await User.update(userChanges, {
-      where: {
-        id
-      }
-    });
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado!' });
+    }
 
-    return res.status(200).json({ message: 'Usuário atualizado com sucesso.' });
+    if (profilePicturePath) {
+      await user.update({ firstName, lastName, userName, aboutMe, profilePicturePath: req.file.path });
+    } else {
+      await user.update({ firstName, lastName, userName, aboutMe });
+    }
+
+    return res.status(200).json({ user, message: 'Usuário atualizado com sucesso!' });
   } catch (err) {
-    next(err);
+    return next(err);
   }
-};
+}
 
 module.exports = updateUser;

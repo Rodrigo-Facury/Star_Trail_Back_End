@@ -10,10 +10,11 @@ const validateToken = require('../middlewares/validateToken');
 const resetPassword = require('../controllers/userController/resetPassword');
 const getFollowed = require('../controllers/userController/getFollowed');
 const getFollowers = require('../controllers/userController/getFollowers');
+const { upload } = require('../middlewares/receiveFiles');
 
 const router = express.Router();
 
-router.put('/', validateToken, updateUser);
+router.put('/', validateToken, upload.single('profilePicturePath'), updateUser);
 
 router.put('/password', validateToken, resetPassword);
 

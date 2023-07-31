@@ -1,27 +1,27 @@
 const express = require('express');
-const getCompanyRoles = require('../controllers/companyController/getCompanyRoles');
-const getClients = require('../controllers/companyController/getClients');
-const postCompany = require('../controllers/companyController/postCompany');
-const getUsersInCharge = require('../controllers/companyController/getUsersInCharge');
-const postUserInCharge = require('../controllers/companyController/postUserInCharge');
-const updateClients = require('../controllers/companyController/updateClients');
-const deleteCompany = require('../controllers/companyController/deleteCompany');
 const validateToken = require('../middlewares/validateToken');
+const getTrailsFeed = require('../controllers/trailController/getTrailsFeed');
+const deleteTrail = require('../controllers/trailController/deleteTrail');
+const updateTrail = require('../controllers/trailController/updateTrail');
+const postTrail = require('../controllers/trailController/postTrail');
+const getStarredTrails = require('../controllers/trailController/getStarredTrails');
+const getTrailsByUser = require('../controllers/trailController/getUsersTrails');
+const getTrailsByTopic = require('../controllers/trailController/getTrailsByTopic');
 
 const router = express.Router();
 
-router.post('/', postCompany);
+router.delete('/:trailId', validateToken, deleteTrail);
 
-router.put('/:id', updateClients);
+router.get('/starred', getStarredTrails);
 
-router.post('/userInCharge', postUserInCharge);
+router.get('/topic/:topicId', getTrailsByTopic);
 
-router.get('/', getClients);
+router.get('/', getTrailsFeed);
 
-router.delete('/:id', validateToken, deleteCompany);
+router.get('/user/:userId', getTrailsByUser);
 
-router.get('/usersInCharge/:companyId', getUsersInCharge);
+router.post('/', validateToken, postTrail);
 
-router.get('/roles/:companyId', getCompanyRoles);
+router.put('/:trailId', validateToken, updateTrail);
 
 module.exports = router;
