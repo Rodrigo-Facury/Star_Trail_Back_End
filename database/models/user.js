@@ -34,7 +34,7 @@ module.exports = (sequelize) => {
     },
     level: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     aboutMe: {
       type: DataTypes.TEXT,
@@ -43,9 +43,9 @@ module.exports = (sequelize) => {
   });
 
   User.associate = (models) => {
-    User.belongsToMany(models.Trail, {
-      through: 'Star',
-      foreignKey: 'userId'
+    User.hasMany(models.Star, {
+      foreignKey: 'userId',
+      as: 'stars',
     });
 
     User.belongsToMany(models.User, {

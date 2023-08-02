@@ -10,8 +10,6 @@ function validateUserInfo(req, res, next) {
       password,
     } } = req;
 
-    console.log(req.body);
-
     if (!firstName) {
       return res.status(400).json({ message: '"Nome" é um campo obrigatório.' });
     }

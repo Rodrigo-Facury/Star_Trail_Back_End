@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const { User } = require('../../../database/models');
+const { Op } = require('sequelize')
 const createToken = require('../../services/createToken');
 
 async function login(req, res, next) {

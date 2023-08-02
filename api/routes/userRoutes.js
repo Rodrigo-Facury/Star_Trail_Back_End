@@ -1,7 +1,7 @@
 const express = require('express');
 const login = require('../controllers/userController/login');
 const postUser = require('../controllers/userController/postUser');
-const checkUserByEmail = require('../middlewares/checkUserEmail');
+const checkUserByEmail = require('../middlewares/checkUserEmailAndUsername');
 const validateLoginInfo = require('../middlewares/validateLoginInfo');
 const validateUserInfo = require('../middlewares/validateUserInfo');
 const updateUser = require('../controllers/userController/updateUser');
@@ -11,6 +11,9 @@ const resetPassword = require('../controllers/userController/resetPassword');
 const getFollowed = require('../controllers/userController/getFollowed');
 const getFollowers = require('../controllers/userController/getFollowers');
 const { upload } = require('../middlewares/receiveFiles');
+const getUserById = require('../controllers/userController/getUserById');
+const getUsersByUsername = require('../controllers/userController/getUsersByUsername');
+const followUser = require('../controllers/userController/followUser');
 
 const router = express.Router();
 
@@ -18,13 +21,19 @@ router.put('/', validateToken, upload.single('profilePicturePath'), updateUser);
 
 router.put('/password', validateToken, resetPassword);
 
-router.delete('/', validateToken, deleteUser);
+router.get('/followers', validateToken, getFollowers);
 
 router.get('/followed', validateToken, getFollowed);
 
-router.get('/followers', validateToken, getFollowers);
+router.delete('/', validateToken, deleteUser);
+
+router.get('/username/:username', getUsersByUsername);
+
+router.get('/:id', getUserById);
 
 router.post('/', validateUserInfo, checkUserByEmail, postUser);
+
+router.post('/follow/:followedUserId', validateToken, followUser);
 
 router.post('/login', validateLoginInfo, login);
 

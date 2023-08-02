@@ -19,9 +19,19 @@ module.exports = (sequelize) => {
       foreignKey: 'trailId',
     });
 
-    Trail.belongsToMany(models.User, {
-      through: 'Star',
+    Trail.hasMany(models.Star, {
       foreignKey: 'trailId',
+      as: 'stars',
+    });
+
+    Trail.hasMany(models.Step, {
+      foreignKey: 'trailId',
+      as: 'steps'
+    });
+
+    Trail.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'creator'
     });
   };
 

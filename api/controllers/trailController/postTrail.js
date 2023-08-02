@@ -6,6 +6,7 @@ function normalizeTopicName(topicName) {
 }
 
 async function postTrail(req, res, next) {
+  const { id: userId } = req.user;
   const { title, steps, topics } = req.body;
 
   try {
@@ -28,7 +29,7 @@ async function postTrail(req, res, next) {
     const allTopics = [...existingTopics, ...createdTopics];
 
 
-    const trail = await Trail.create({ title });
+    const trail = await Trail.create({ title, userId });
 
     await Step.bulkCreate(
       steps.map((step) => ({

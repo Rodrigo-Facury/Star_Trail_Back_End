@@ -10,6 +10,17 @@ async function findByEmail(email) {
   }
 };
 
+async function findByUsername(username) {
+  try {
+    const user = await User.findOne({ where: { username } });
+    
+    return user;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 module.exports = {
-  findByEmail
+  findByEmail,
+  findByUsername
 };

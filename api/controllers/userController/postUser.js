@@ -18,7 +18,7 @@ async function postUser(req, res, next) {
 
         delete createdUser.password;
 
-        const token = createToken(createdUser);
+        const token = createToken(createdUser.dataValues);
     
         return res.status(201).json({ message: 'Usuário criado com sucesso.', token });
       });

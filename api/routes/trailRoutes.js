@@ -7,6 +7,7 @@ const postTrail = require('../controllers/trailController/postTrail');
 const getStarredTrails = require('../controllers/trailController/getStarredTrails');
 const getTrailsByUser = require('../controllers/trailController/getUsersTrails');
 const getTrailsByTopic = require('../controllers/trailController/getTrailsByTopic');
+const starTrail = require('../controllers/trailController/starTrail');
 
 const router = express.Router();
 
@@ -21,6 +22,8 @@ router.get('/', getTrailsFeed);
 router.get('/user/:userId', getTrailsByUser);
 
 router.post('/', validateToken, postTrail);
+
+router.post('/star/:trailId', validateToken, starTrail);
 
 router.put('/:trailId', validateToken, updateTrail);
 
