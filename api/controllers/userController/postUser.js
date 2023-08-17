@@ -1,6 +1,7 @@
 const { User } = require('../../../database/models');
 const bcrypt = require('bcrypt');
 const createToken = require('../../services/createToken');
+const getRandomImage = require('../../../helpers/getRandomImage.helper');
 
 async function postUser(req, res, next) {
   try {
@@ -9,8 +10,11 @@ async function postUser(req, res, next) {
 
     bcrypt.genSalt(saltRounds, function(_err, salt) {
       bcrypt.hash(password, salt, async function(_err, hash) {
+        const profilePicturePath = await getRandomImage();
+
         const protectedUser = {
           password: hash,
+          profilePicturePath,
           ...user
         };
 

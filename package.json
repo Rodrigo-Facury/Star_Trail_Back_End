@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/Rodrigo-Facury/star_trail_back_express#readme",
   "dependencies": {
+    "axios": "^1.4.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
