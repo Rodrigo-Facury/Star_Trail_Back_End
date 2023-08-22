@@ -1,17 +1,13 @@
 const { Topic, Trail, Step } = require('../../../database/models');
 const { Op } = require('sequelize');
 
-function normalizeTopicName(topicName) {
-  return topicName.toLowerCase().replace(/[^\w\s]/gi, '').trim();
-}
-
 async function postTrail(req, res, next) {
   const { id: userId } = req.user;
   const { title, steps, topics } = req.body;
 
-  try {
-    const normalizedTopics = topics.map((topic) => normalizeTopicName(topic));
+  const normalizedTopics = topics.map((topic) => topic.toLowerCase());
 
+  try {
     const existingTopics = await Topic.findAll({
       where: {
         name: {

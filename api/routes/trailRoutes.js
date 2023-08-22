@@ -8,10 +8,13 @@ const getStarredTrails = require('../controllers/trailController/getStarredTrail
 const getTrailsByUser = require('../controllers/trailController/getUsersTrails');
 const getTrailsByTopic = require('../controllers/trailController/getTrailsByTopic');
 const starTrail = require('../controllers/trailController/starTrail');
+const getTrailById = require('../controllers/trailController/getTrailById');
 
 const router = express.Router();
 
 router.delete('/:trailId', validateToken, deleteTrail);
+
+router.get('/:trailId', getTrailById);
 
 router.get('/starred', getStarredTrails);
 

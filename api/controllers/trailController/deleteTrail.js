@@ -6,7 +6,10 @@ async function deleteTrail(req, res, next) {
 
   try {
     const trail = await Trail.findByPk(trailId, {
-      include: [Step],
+      include: [{
+        model: Step,
+        as: 'steps'
+      }],
     });
 
     if (!trail) {

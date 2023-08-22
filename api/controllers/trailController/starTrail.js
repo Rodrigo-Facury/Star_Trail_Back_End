@@ -23,7 +23,9 @@ async function starTrail(req, res, next) {
     });
 
     if (existingStar) {
-      return res.status(400).json({ message: 'Você já deu star a essa trail!' });
+      await existingStar.destroy();
+
+      return res.status(204).send();
     }
 
     const star = await Star.create({

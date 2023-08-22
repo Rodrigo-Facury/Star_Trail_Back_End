@@ -34,7 +34,7 @@ async function updateUser(req, res, next) {
         });
       }
 
-      await user.update({ firstName, lastName, username, aboutMe, profilePicturePath: req.file.path });
+      await user.update({ firstName, lastName, username, aboutMe, profilePicturePath: `http://localhost:3001/${req.file.path}` });
     } else {
       await user.update({ firstName, lastName, username, aboutMe });
     }

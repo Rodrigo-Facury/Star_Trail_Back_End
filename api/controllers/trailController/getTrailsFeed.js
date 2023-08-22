@@ -1,4 +1,4 @@
-const { Trail, Step, User, Star, Sequelize } = require('../../../database/models');
+const { Trail, Step, User, Star, Topic, Sequelize } = require('../../../database/models');
 
 const ITEMS_PER_PAGE = 10;
 
@@ -27,7 +27,6 @@ async function getTrailsFeed(req, res, next) {
           model: Step,
           as: 'steps',
           attributes: { exclude: 'trailId' },
-          order: [['position', 'ASC']],
         },
         {
           model: User,
@@ -37,7 +36,12 @@ async function getTrailsFeed(req, res, next) {
         {
           model: Star,
           as: 'stars',
-          attributes: ['id'],
+          attributes: ['userId'],
+        },
+        {
+          model: Topic,
+          through: { attributes: [] },
+          attributes: ['name'],
         }
       ],
     });

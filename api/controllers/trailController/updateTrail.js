@@ -1,10 +1,6 @@
 const { Trail, Step, Topic } = require('../../../database/models');
 const { Op } = require('sequelize');
 
-function normalizeTopicName(topicName) {
-  return topicName.toLowerCase().replace(/[^\w\s]/gi, '').trim();
-}
-
 async function updateTrail(req, res, next) {
   const trailId = req.params.trailId;
   const userId = req.user.id;
@@ -22,6 +18,16 @@ async function updateTrail(req, res, next) {
     }
 
     await trail.update({ title });
+
+    const existingStepIds = steps.map(step => step.id).filter(Boolean);
+    await Step.destroy({
+      where: {
+        trailId: trailId,
+        id: {
+          [Op.notIn]: existingStepIds,
+        },
+      },
+    });
 
     await Promise.all(
       steps.map(async (step) => {
@@ -44,7 +50,7 @@ async function updateTrail(req, res, next) {
       })
     );
 
-    const normalizedTopics = topics.map((topic) => normalizeTopicName(topic));
+    const normalizedTopics = topics.map((topic) => topic.toLowerCase());
 
     const existingTopics = await Topic.findAll({
       where: {

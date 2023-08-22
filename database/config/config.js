@@ -25,5 +25,15 @@ module.exports = {
     dialect: 'postgres',
     protocol: 'postgres',
     ssl: false
+  },
+  prod: {
+    username: process.env.DBUSERNAME,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE,
+    host: process.env.HOSTNAME,
+    port: process.env.DATABASE_PORT,
+    dialect: 'postgres',
+    protocol: 'postgres',
+    ssl: false
   }
 }
