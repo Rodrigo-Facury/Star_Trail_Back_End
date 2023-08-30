@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:18 as build
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -19,6 +19,12 @@ RUN npm ci --only=production
 # Bundle app source
 COPY . .
 
-EXPOSE 3001
+# Production environment
+FROM nginx:1.16.0-alpine as production
+COPY --from=build /usr/src/app /usr/share/nginx/api
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-CMD [ "sh", "init.sh" ]
+EXPOSE 3001
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]
