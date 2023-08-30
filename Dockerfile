@@ -18,5 +18,6 @@ RUN npm ci --only=production
 COPY . .
 
 EXPOSE 3001
+EXPOSE 3443
 
 CMD [ "sh", "init.sh" ]
