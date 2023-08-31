@@ -7,11 +7,10 @@ async function getTrailsFeed(req, res, next) {
   const orderBy = req.query.orderBy || 'createdAt';
 
   let trails;
-  let count;
 
   try {
     if (orderBy === 'starsCount') {
-      const { count: countAll, rows } = await Trail.findAndCountAll({
+      const allTrails = await Trail.findAll({
         attributes: {
           include: [
             [
@@ -24,8 +23,6 @@ async function getTrailsFeed(req, res, next) {
             ]
           ],
         },
-        offset: (currentPage - 1) * ITEMS_PER_PAGE,
-        limit: ITEMS_PER_PAGE,
         include: [
           {
             model: Step,
@@ -50,11 +47,14 @@ async function getTrailsFeed(req, res, next) {
         ],
       });
 
-      count = countAll;
-      trails = rows;
-      trails.sort((a, b) => b.dataValues.starsCount - a.dataValues.starsCount);
+      allTrails.sort((a, b) => b.dataValues.starsCount - a.dataValues.starsCount);
+
+      const firstItem = (currentPage - 1) * ITEMS_PER_PAGE;
+      const end = firstItem + ITEMS_PER_PAGE;
+
+      trails = allTrails.slice(firstItem, end);
     } else {
-      const { count: countAll, rows } = await Trail.findAndCountAll({
+      const queryTrails = await Trail.findAll({
         attributes: {
           include: [
             [
@@ -94,13 +94,14 @@ async function getTrailsFeed(req, res, next) {
         ],
       });
 
-      count = countAll;
-      trails = rows;
+      trails = queryTrails;
     }
+
+    const count = await Trail.count();
 
     const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
     
-    return res.status(200).json({ trails, currentPage, totalPages, message: 'Feed de trilhas obtido com sucesso!' });
+    return res.status(200).json({ trails, nextPage: Number(currentPage) + 1, totalPages, message: 'Feed de trilhas obtido com sucesso!' });
   } catch (err) {
     return next(err);
   }
