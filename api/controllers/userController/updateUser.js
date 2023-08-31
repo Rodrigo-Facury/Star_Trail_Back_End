@@ -25,7 +25,7 @@ async function updateUser(req, res, next) {
 
     if (req.file && req.file.path) {
       if (user.profilePicturePath) {
-        const previousProfilePicturePath = path.resolve(user.profilePicturePath);
+        const previousProfilePicturePath = path.resolve(user.profilePicturePath.split('http://localhost:3001/').join(''));
 
         fs.unlink(previousProfilePicturePath, (err) => {
           if (err) {
