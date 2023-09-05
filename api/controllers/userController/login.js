@@ -30,10 +30,11 @@ async function login(req, res, next) {
 
     const userInfo = user.dataValues;
 
-    const peopleIFollow = await user.getFollowing();
+    const following = await user.getFollowing({
+      attributes: ['id'],
+    });
 
-    console.log(peopleIFollow + 'AQUIIIII')
-
+    const peopleIFollow = following.map(user => user.id);
 
     const token = createToken({ ...userInfo, peopleIFollow: [...peopleIFollow]});
 
