@@ -14,6 +14,7 @@ const { upload } = require('../middlewares/receiveFiles');
 const getUserById = require('../controllers/userController/getUserById');
 const getUsersByUsername = require('../controllers/userController/getUsersByUsername');
 const followUser = require('../controllers/userController/followUser');
+const unfollowUser = require('../controllers/userController/unfollowUser');
 
 const router = express.Router();
 
@@ -34,6 +35,8 @@ router.get('/:id', getUserById);
 router.post('/', validateUserInfo, checkUserByEmail, postUser);
 
 router.post('/follow/:followedUserId', validateToken, followUser);
+
+router.post('/unfollow/:followedUserId', validateToken, unfollowUser);
 
 router.post('/login', validateLoginInfo, login);
 

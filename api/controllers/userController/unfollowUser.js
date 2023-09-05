@@ -1,28 +1,28 @@
 const { User, Follow } = require('../../../database/models');
 const createToken = require('../../services/createToken');
 
-async function followUser(req, res, next) {
+async function unfollowUser(req, res, next) {
   const userId = req.user.id;
   const { followedUserId } = req.params;
 
   try {
-    const followedUser = await User.findByPk(followedUserId);
+    const userToUnfollow = await User.findByPk(followedUserId);
 
-    if (!followedUser) {
-      return res.status(404).json({ message: 'Usuário que está sendo seguido não encontrado!' });
+    if (!userToUnfollow) {
+      return res.status(404).json({ message: 'Usuário que está deixando de ser seguido não encontrado!' });
     }
-
-    await Follow.create({ followerUserId: userId, followedUserId });
 
     const me = await User.findByPk(userId);
 
-    const myInfo = me.dataValues;
-
+    await me.removeFollowing(userToUnfollow);
+    
     const following = await me.getFollowing({
       attributes: ['id'],
     });
-
+    
     const peopleIFollow = following.map(user => user.id);
+    
+    const myInfo = me.dataValues;
 
     const newToken = createToken({ ...myInfo, peopleIFollow: [...peopleIFollow]});
 
@@ -32,4 +32,4 @@ async function followUser(req, res, next) {
   }
 }
 
-module.exports = followUser;
+module.exports = unfollowUser;

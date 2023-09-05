@@ -1,6 +1,7 @@
 const { User } = require('../../../database/models');
 const fs = require('fs');
 const path = require('path');
+const createToken = require('../../services/createToken');
 
 async function updateUser(req, res, next) {
   const userId = req.user.id;
@@ -25,7 +26,7 @@ async function updateUser(req, res, next) {
 
     if (req.file && req.file.path) {
       if (user.profilePicturePath) {
-        const previousProfilePicturePath = path.resolve(user.profilePicturePath.split('http://localhost:3001/').join(''));
+        const previousProfilePicturePath = path.resolve(user.profilePicturePath.split(process.env.API_BASE_URL).join(''));
 
         fs.unlink(previousProfilePicturePath, (err) => {
           if (err) {
@@ -34,14 +35,16 @@ async function updateUser(req, res, next) {
         });
       }
 
-      await user.update({ firstName, lastName, username, aboutMe, profilePicturePath: `http://localhost:3001/${req.file.path}` });
+      await user.update({ firstName, lastName, username, aboutMe, profilePicturePath: `${process.env.API_BASE_URL}${req.file.path}` });
     } else {
       await user.update({ firstName, lastName, username, aboutMe });
     }
 
     delete user.dataValues.password;
 
-    return res.status(200).json({ user, message: 'Usuário atualizado com sucesso!' });
+    const newToken = createToken(user.dataValues);
+
+    return res.status(200).json({ user, newToken, message: 'Usuário atualizado com sucesso!' });
   } catch (err) {
     return next(err);
   }

@@ -30,7 +30,12 @@ async function login(req, res, next) {
 
     const userInfo = user.dataValues;
 
-    const token = createToken(userInfo);
+    const peopleIFollow = await user.getFollowing();
+
+    console.log(peopleIFollow + 'AQUIIIII')
+
+
+    const token = createToken({ ...userInfo, peopleIFollow: [...peopleIFollow]});
 
     return res.status(200).json({ token, message: 'Login efetuado com sucesso!' });
 
