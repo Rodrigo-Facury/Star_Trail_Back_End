@@ -1,4 +1,5 @@
 const { Trail, User, Star } = require('../../../database/models');
+const { gradeUser } = require('../../services/userServices');
 
 async function starTrail(req, res, next) {
   const { trailId } = req.params;
@@ -32,6 +33,8 @@ async function starTrail(req, res, next) {
       trailId: trail.id,
       userId: user.id,
     });
+
+    await gradeUser(trail.userId);
 
     return res.status(201).json({ star, message: 'Star criada com sucesso!' });
   } catch (err) {

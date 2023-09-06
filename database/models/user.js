@@ -48,6 +48,11 @@ module.exports = (sequelize) => {
       as: 'stars',
     });
 
+    User.hasMany(models.Trail, {
+      foreignKey: 'userId',
+      as: 'trails',
+    });
+
     User.belongsToMany(models.User, {
       through: 'Follow',
       as: 'Followers',
