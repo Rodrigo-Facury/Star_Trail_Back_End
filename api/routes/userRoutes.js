@@ -15,6 +15,7 @@ const getUserById = require('../controllers/userController/getUserById');
 const getUsersByUsername = require('../controllers/userController/getUsersByUsername');
 const followUser = require('../controllers/userController/followUser');
 const unfollowUser = require('../controllers/userController/unfollowUser');
+const getUserByUsername = require('../controllers/userController/getUserByUsername');
 
 const router = express.Router();
 
@@ -29,6 +30,8 @@ router.get('/followed', validateToken, getFollowed);
 router.delete('/', validateToken, deleteUser);
 
 router.get('/username/:username', getUsersByUsername);
+
+router.get('/username-exact/:username', getUserByUsername);
 
 router.get('/:id', getUserById);
 
