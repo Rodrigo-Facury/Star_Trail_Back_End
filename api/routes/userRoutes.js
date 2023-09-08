@@ -16,6 +16,7 @@ const getUsersByUsername = require('../controllers/userController/getUsersByUser
 const followUser = require('../controllers/userController/followUser');
 const unfollowUser = require('../controllers/userController/unfollowUser');
 const getUserByUsername = require('../controllers/userController/getUserByUsername');
+const getUsersNotifications = require('../controllers/userController/getUsersNotifications');
 
 const router = express.Router();
 
@@ -24,6 +25,8 @@ router.put('/', validateToken, upload.single('profilePicturePath'), updateUser);
 router.put('/password', validateToken, resetPassword);
 
 router.get('/followers', validateToken, getFollowers);
+
+router.get('/notifications', validateToken, getUsersNotifications);
 
 router.get('/followed', validateToken, getFollowed);
 

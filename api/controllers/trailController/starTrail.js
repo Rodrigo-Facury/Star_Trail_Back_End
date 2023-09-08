@@ -1,4 +1,4 @@
-const { Trail, User, Star } = require('../../../database/models');
+const { Trail, User, Star, Notification } = require('../../../database/models');
 const { gradeUser } = require('../../services/userServices');
 
 async function starTrail(req, res, next) {
@@ -32,6 +32,13 @@ async function starTrail(req, res, next) {
     const star = await Star.create({
       trailId: trail.id,
       userId: user.id,
+    });
+
+    const creator = await trail.getCreator();
+
+    await Notification.create({
+      message: `${user.username} acabou de curtir sua trilha: ${trail.title}`,
+      userId: creator.id
     });
 
     await gradeUser(trail.userId);
