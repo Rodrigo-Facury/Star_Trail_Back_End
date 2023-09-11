@@ -8,6 +8,8 @@ async function getUsersNotifications(req, res, next) {
       attributes: { exclude: ['password'] }
     });
 
+    console.log('teste')
+
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado!' });
     }
