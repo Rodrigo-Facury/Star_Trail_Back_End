@@ -1,4 +1,4 @@
-const { User, Follow } = require('../../../database/models');
+const { User, Follow, Notification } = require('../../../database/models');
 const createToken = require('../../services/createToken');
 
 async function followUser(req, res, next) {
@@ -23,6 +23,12 @@ async function followUser(req, res, next) {
     });
 
     const peopleIFollow = following.map(user => user.id);
+
+    await Notification.create({
+      message: `@${me.username} começou a seguir você`,
+      userId: followedUserId,
+      goto: `/profile/${me.username}`
+    });
 
     const newToken = createToken({ ...myInfo, peopleIFollow: [...peopleIFollow]});
 
