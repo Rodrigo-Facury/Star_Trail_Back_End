@@ -3,7 +3,7 @@ const { SECRET } = process.env;
 
 function createToken(payload) {
     const jwtConfig = {
-      expiresIn: '1d',
+      expiresIn: '7d',
       algorithm: 'HS256',
     };
 
