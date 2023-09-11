@@ -11,7 +11,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       foreignKey: 'userId'
     },
-    message: DataTypes.STRING
+    message: DataTypes.STRING,
+    seen: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    goto: DataTypes.STRING
   }, {});
 
   return Notification;

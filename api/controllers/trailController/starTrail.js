@@ -37,8 +37,9 @@ async function starTrail(req, res, next) {
     const creator = await trail.getCreator();
 
     await Notification.create({
-      message: `${user.username} acabou de curtir sua trilha: ${trail.title}`,
-      userId: creator.id
+      message: `@${user.username} acabou de curtir sua trilha: ${trail.title}`,
+      userId: creator.id,
+      goto: `/?trailId=${trail.id}`
     });
 
     await gradeUser(trail.userId);

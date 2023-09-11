@@ -1,4 +1,4 @@
-const { User } = require('../../../database/models');
+const { User, Notification } = require('../../../database/models');
 const bcrypt = require('bcrypt');
 const createToken = require('../../services/createToken');
 const getRandomImage = require('../../../helpers/getRandomImage.helper');
@@ -21,6 +21,11 @@ async function postUser(req, res, next) {
         const createdUser = await User.create(protectedUser);
 
         delete createdUser.password;
+
+        await Notification.create({
+          message: 'Boas-vindas à Star Trail! Sinta-se em casa!',
+          userId: createdUser.id
+        });
 
         const token = createToken(createdUser.dataValues);
     

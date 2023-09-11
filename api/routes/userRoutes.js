@@ -17,12 +17,15 @@ const followUser = require('../controllers/userController/followUser');
 const unfollowUser = require('../controllers/userController/unfollowUser');
 const getUserByUsername = require('../controllers/userController/getUserByUsername');
 const getUsersNotifications = require('../controllers/userController/getUsersNotifications');
+const markSeenUsersNotifications = require('../controllers/userController/markSeenUsersNotifications');
 
 const router = express.Router();
 
 router.put('/', validateToken, upload.single('profilePicturePath'), updateUser);
 
 router.put('/password', validateToken, resetPassword);
+
+router.put('/see-notification/:notificationId', validateToken, markSeenUsersNotifications);
 
 router.get('/followers', validateToken, getFollowers);
 

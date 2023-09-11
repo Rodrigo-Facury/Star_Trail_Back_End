@@ -12,7 +12,7 @@ async function getUsersNotifications(req, res, next) {
       return res.status(404).json({ message: 'Usuário não encontrado!' });
     }
 
-    const notifications = await user.getNotifications({ attributes: ['message', 'createdAt'] });
+    const notifications = await user.getNotifications({ attributes: ['id', 'message', 'createdAt', 'goto', 'seen'], order: [['createdAt', 'DESC']] });
 
     return res.status(200).json({ notifications, message: 'Notificações encontradas com sucesso!' });
   } catch (err) {
