@@ -36,6 +36,15 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    validated: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    validationToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     aboutMe: {
       type: DataTypes.TEXT,
       allowNull: true,
