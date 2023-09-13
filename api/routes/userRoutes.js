@@ -10,7 +10,7 @@ const validateToken = require('../middlewares/validateToken');
 const resetPassword = require('../controllers/userController/resetPassword');
 const getFollowed = require('../controllers/userController/getFollowed');
 const getFollowers = require('../controllers/userController/getFollowers');
-const { upload } = require('../middlewares/receiveFiles');
+const { upload, processAndSaveImage } = require('../middlewares/receiveFiles');
 const getUserById = require('../controllers/userController/getUserById');
 const getUsersByUsername = require('../controllers/userController/getUsersByUsername');
 const followUser = require('../controllers/userController/followUser');
@@ -21,7 +21,7 @@ const markSeenUsersNotifications = require('../controllers/userController/markSe
 
 const router = express.Router();
 
-router.put('/', validateToken, upload.single('profilePicturePath'), updateUser);
+router.put('/', validateToken, upload.single('profilePicturePath'), processAndSaveImage, updateUser);
 
 router.put('/password', validateToken, resetPassword);
 
