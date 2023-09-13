@@ -66,7 +66,7 @@ app.get('/resend-validation-email/:email', async (req, res) => {
       html: `<p>Por favor, <a href="${validationUrl}">clique aqui</a> para validar seu email.</p>`
     };
 
-    mailer.sendMail(mailOptions, (error, info) => {
+    await mailer.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error('Erro ao enviar o email de validação:', error);
         return res.status(500).json({ message: 'Erro ao enviar o email de validação' });
