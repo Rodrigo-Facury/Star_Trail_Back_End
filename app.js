@@ -69,14 +69,14 @@ app.get('/resend-validation-email/:email', async (req, res) => {
     await mailer.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error('Erro ao enviar o email de validação:', error);
-        return res.status(500).json({ message: 'Erro ao enviar o email de validação' });
 
+        return res.status(500).json({ message: 'Erro ao enviar o email de validação' });
       } else {
         console.log('Email de validação enviado:', info.response);
+
+        return res.status(200).json({ message: 'E-mail reenviado com sucesso' });
       }
     });
-
-    return res.status(200).json({ message: 'E-mail reenviado com sucesso' });
   }
 });
 
