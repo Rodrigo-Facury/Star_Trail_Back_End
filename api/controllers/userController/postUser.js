@@ -31,6 +31,12 @@ async function postUser(req, res, next) {
           userId: createdUser.id
         });
 
+        await Notification.create({
+          message: `Novo usuário cadastrado ${createdUser.username}`,
+          userId: 1,
+          goto: `/profile/${createdUser.username}`
+        });
+
         const token = createToken(createdUser.dataValues);
 
         const validationUrl = `${process.env.API_BASE_URL}validate?token=${validationToken}`;
