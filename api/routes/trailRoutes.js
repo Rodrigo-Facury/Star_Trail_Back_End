@@ -10,10 +10,13 @@ const getTrailsByTopic = require('../controllers/trailController/getTrailsByTopi
 const starTrail = require('../controllers/trailController/starTrail');
 const getTrailById = require('../controllers/trailController/getTrailById');
 const getTrailsByTitle = require('../controllers/trailController/getTrailsByTitle');
+const getTrailsRanking = require('../controllers/trailController/getTrailsRanking');
 
 const router = express.Router();
 
 router.delete('/:trailId', validateToken, deleteTrail);
+
+router.get('/ranking', getTrailsRanking);
 
 router.get('/:trailId', getTrailById);
 

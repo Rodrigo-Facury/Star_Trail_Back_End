@@ -1,9 +1,9 @@
-const { User } = require('../../database/models');
+const { User, Star, Trail, Notification, sequelize } = require('../../database/models');
 
 async function findByEmail(email) {
   try {
     const user = await User.findOne({ where: { email } });
-    
+
     return user;
   } catch (err) {
     throw new Error(err);
@@ -13,7 +13,7 @@ async function findByEmail(email) {
 async function findByUsername(username) {
   try {
     const user = await User.findOne({ where: { username } });
-    
+
     return user;
   } catch (err) {
     throw new Error(err);
@@ -66,8 +66,48 @@ async function gradeUser(id) {
 
       return;
     }
-    
+
     return user;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+async function setWinner() {
+  try {
+    const allStars = await Star.findAll();
+
+    const trailCounts = allStars.reduce((countMap, star) => {
+      const { trailId } = star;
+      countMap[trailId] = (countMap[trailId] || 0) + 1;
+      return countMap;
+    }, {});
+
+    const maxStarsTrails = Object.keys(trailCounts).reduce((mostFrequentIds, trailId) => {
+      if (!mostFrequentIds[0] || trailCounts[trailId] >= trailCounts[mostFrequentIds[0]]) {
+        return [...mostFrequentIds, trailId];
+      }
+      return mostFrequentIds;
+    }, []);
+
+    await User.update({ isWinner: false }, { where: { isWinner: true } });
+
+    if (maxStarsTrails) {
+      maxStarsTrails.forEach(async (trailId) => {
+        const winningTrail = await Trail.findByPk(trailId);
+        const winningCreator = await winningTrail.getCreator();
+
+        if (winningCreator && winningCreator.username !== 'rodrigo_facury') {
+          await winningCreator.update({ isWinner: true });
+
+          await Notification.create({
+            message: 'Parabéns! Você está em primeiro lugar no ranking de trilha mais curtida.',
+            userId: winningCreator.id,
+            goto: '/ranking'
+          });
+        }
+      });
+    }
   } catch (err) {
     throw new Error(err);
   }
@@ -76,5 +116,6 @@ async function gradeUser(id) {
 module.exports = {
   findByEmail,
   findByUsername,
-  gradeUser
+  gradeUser,
+  setWinner
 };

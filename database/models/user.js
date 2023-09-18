@@ -45,6 +45,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    isWinner: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     aboutMe: {
       type: DataTypes.TEXT,
       allowNull: true,

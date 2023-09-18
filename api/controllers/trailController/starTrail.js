@@ -1,5 +1,5 @@
 const { Trail, User, Star, Notification } = require('../../../database/models');
-const { gradeUser } = require('../../services/userServices');
+const { gradeUser, setWinner } = require('../../services/userServices');
 
 async function starTrail(req, res, next) {
   const { trailId } = req.params;
@@ -26,6 +26,8 @@ async function starTrail(req, res, next) {
     if (existingStar) {
       await existingStar.destroy();
 
+      await setWinner();
+
       return res.status(204).send();
     }
 
@@ -41,6 +43,8 @@ async function starTrail(req, res, next) {
       userId: creator.id,
       goto: `/?trailId=${trail.id}`
     });
+
+    await setWinner();
 
     await gradeUser(trail.userId);
 
