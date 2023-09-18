@@ -37,6 +37,12 @@ async function postTrail(req, res, next) {
 
     await trail.addTopics(allTopics);
 
+    await Notification.create({
+      message: `Parabéns pela criação da trilha! Confira aqui sua posição no ranking!`,
+      userId: creator.id,
+      goto: `/ranking`
+    });
+
     return res.status(201).json({ trail, message: 'Trilha criada com sucesso!' });
 
   } catch (err) {
