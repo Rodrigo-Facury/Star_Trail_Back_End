@@ -44,6 +44,12 @@ async function starTrail(req, res, next) {
       goto: `/?trailId=${trail.id}`
     });
 
+    await Notification.create({
+      message: `Confira sua posição no ranking!`,
+      userId: creator.id,
+      goto: `/ranking`
+    });
+
     await setWinner();
 
     await gradeUser(trail.userId);
