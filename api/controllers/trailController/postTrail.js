@@ -1,4 +1,4 @@
-const { Topic, Trail, Step, Notification } = require('../../../database/models');
+const { Topic, Trail, Step, Notification, User } = require('../../../database/models');
 const { Op } = require('sequelize');
 
 async function postTrail(req, res, next) {
@@ -40,8 +40,20 @@ async function postTrail(req, res, next) {
     await Notification.create({
       message: `Parabéns pela criação da trilha! Confira aqui sua posição no ranking!`,
       userId: userId,
-      goto: `/ranking`
+      goto: '/ranking'
     });
+
+    const user = await User.findByPk(userId);
+
+    const followers = await user.getFollowers();
+
+    followers.forEach(async ({ dataValues }) => {
+      await Notification.create({
+        message: `${user.username} acabou de postar uma trilha`,
+        userId: dataValues.id,
+        goto: `/?trailId=${trail.id}`
+      });
+    })
 
     return res.status(201).json({ trail, message: 'Trilha criada com sucesso!' });
 
