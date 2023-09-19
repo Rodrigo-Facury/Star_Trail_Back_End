@@ -78,7 +78,7 @@ async function getTrailsFeed(req, res, next) {
           },
           {
             model: User,
-            attributes: ['id', 'username', 'profilePicturePath', 'level'],
+            attributes: ['id', 'username', 'profilePicturePath', 'level', 'isWinner'],
             as: 'creator',
           },
           {

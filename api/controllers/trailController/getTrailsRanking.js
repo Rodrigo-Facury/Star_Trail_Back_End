@@ -25,6 +25,7 @@ async function getTrailsRanking(req, res, next) {
           model: User,
           attributes: ['id', 'username', 'profilePicturePath', 'level', 'isCompetitor'],
           as: 'creator',
+          where: { [Op.not]: { id: 1 } }
         },
         {
           model: Star,
@@ -42,8 +43,6 @@ async function getTrailsRanking(req, res, next) {
       const newTrail = {};
 
       newTrail.id = trail.dataValues.id;
-
-      console.log(trail.dataValues.creator)
 
       if (!trail.dataValues.creator.dataValues.isCompetitor) {
         newTrail.isCompetitor = false;

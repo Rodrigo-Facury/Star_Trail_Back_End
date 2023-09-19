@@ -7,6 +7,8 @@ async function getUserByUsername(req, res, next) {
   try {
     const user = await findByUsername(username);
 
+    console.log(user)
+
     return res.status(200).json({ user, message: 'Usuário encontrado!' });
   } catch (err) {
     return next(err);

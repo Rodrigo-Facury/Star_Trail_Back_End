@@ -1,4 +1,4 @@
-const { Topic, Trail, Step } = require('../../../database/models');
+const { Topic, Trail, Step, Notification } = require('../../../database/models');
 const { Op } = require('sequelize');
 
 async function postTrail(req, res, next) {
@@ -39,7 +39,7 @@ async function postTrail(req, res, next) {
 
     await Notification.create({
       message: `Parabéns pela criação da trilha! Confira aqui sua posição no ranking!`,
-      userId: creator.id,
+      userId: userId,
       goto: `/ranking`
     });
 

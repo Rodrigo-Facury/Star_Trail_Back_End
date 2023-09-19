@@ -27,8 +27,9 @@ async function postUser(req, res, next) {
         delete createdUser.password;
 
         await Notification.create({
-          message: 'Boas-vindas à Star Trail! Sinta-se em casa!',
-          userId: createdUser.id
+          message: 'Boas-vindas à Star Trail! Sinta-se em casa! Está sabendo da competição? Clique aqui para ver o ranking de trilhas mais curtidas.',
+          userId: createdUser.id,
+          goto: '/ranking'
         });
 
         await Notification.create({

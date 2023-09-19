@@ -12,7 +12,7 @@ async function findByEmail(email) {
 
 async function findByUsername(username) {
   try {
-    const user = await User.findOne({ where: { username } });
+    const user = await User.findOne({ where: { username }, attributes: { exclude: ['password'] } });
 
     return user;
   } catch (err) {
