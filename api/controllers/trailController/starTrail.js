@@ -16,6 +16,8 @@ async function starTrail(req, res, next) {
       return res.status(404).json({ message: 'Usuário não encontrado!' });
     }
 
+    const creator = await trail.getCreator();
+
     const existingStar = await Star.findOne({
       where: {
         trailId: trail.id,
@@ -28,6 +30,16 @@ async function starTrail(req, res, next) {
 
       await setWinner();
 
+      if (user.id === creator.id) {
+        await user.update({ isCompetitor: true, reason: '' });
+
+        await Notification.create({
+          message: 'Você descurtiu sua trilha e agora está de volta ao jogo!',
+          userId: creator.id,
+          goto: '/ranking'
+        });
+      }
+
       return res.status(204).send();
     }
 
@@ -36,21 +48,31 @@ async function starTrail(req, res, next) {
       userId: user.id,
     });
 
-    const creator = await trail.getCreator();
+    if (user.id === creator.id) {
+      console.log(user)
 
-    await Notification.create({
-      message: `@${user.username} acabou de curtir sua trilha: ${trail.title}`,
-      userId: creator.id,
-      goto: `/?trailId=${trail.id}`
-    });
+      await user.update({ isCompetitor: false, reason: 'Curtiu a própria trilha.' });
 
-    await Notification.create({
-      message: `Confira sua posição no ranking!`,
-      userId: creator.id,
-      goto: `/ranking`
-    });
+      await Notification.create({
+        message: 'Que pena! Você curtiu sua própria trilha e isso te desclassifica da competição. Para voltar ao jogo, descurta!',
+        userId: creator.id,
+        goto: '/ranking'
+      });
+    } else {
+      await setWinner();
 
-    await setWinner();
+      await Notification.create({
+        message: `@${user.username} acabou de curtir sua trilha: ${trail.title}`,
+        userId: creator.id,
+        goto: `/?trailId=${trail.id}`
+      });
+
+      await Notification.create({
+        message: `Confira sua posição no ranking!`,
+        userId: creator.id,
+        goto: `/ranking`
+      });
+    }
 
     await gradeUser(trail.userId);
 

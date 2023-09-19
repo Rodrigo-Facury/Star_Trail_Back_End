@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { Trail, User, Star, Sequelize } = require('../../../database/models');
 
 const ITEMS_PER_PAGE = 50;
@@ -22,7 +23,7 @@ async function getTrailsRanking(req, res, next) {
       include: [
         {
           model: User,
-          attributes: ['id', 'username', 'profilePicturePath', 'level'],
+          attributes: ['id', 'username', 'profilePicturePath', 'level', 'isCompetitor'],
           as: 'creator',
         },
         {
@@ -42,11 +43,20 @@ async function getTrailsRanking(req, res, next) {
 
       newTrail.id = trail.dataValues.id;
 
+      console.log(trail.dataValues.creator)
+
+      if (!trail.dataValues.creator.dataValues.isCompetitor) {
+        newTrail.isCompetitor = false;
+
+        return newTrail;
+      }
       
       if (index !== 0 && trail.dataValues.starsCount !== allTrails[index - 1].dataValues.starsCount) {
         position += 1;
       }
       
+      newTrail.isCompetitor = true;
+
       newTrail.position = position;
 
       newTrail.profilePicturePath = trail.creator.profilePicturePath;
@@ -58,9 +68,10 @@ async function getTrailsRanking(req, res, next) {
       newTrail.title = trail.dataValues.title;
 
       return newTrail;
-    });
+    }).filter((trail) => trail.isCompetitor);
 
     const firstItem = (currentPage - 1) * ITEMS_PER_PAGE;
+
     const end = firstItem + ITEMS_PER_PAGE;
 
     const trails = ranking.slice(firstItem, end);

@@ -54,6 +54,15 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    isCompetitor: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
+    },
+    reason: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   });
 
   User.associate = (models) => {
