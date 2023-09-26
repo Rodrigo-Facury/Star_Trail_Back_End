@@ -49,13 +49,13 @@ async function gradeUser(id) {
       return;
     }
 
-    if (countStars.filter((star) => star >= 100) && countStars.filter((star) => star >= 100).length >= 1) {
+    if (countStars.filter((star) => star >= 50) && countStars.filter((star) => star >= 50).length >= 1) {
       await user.update({ level: 2 });
 
       return;
     }
 
-    if (countStars.filter((star) => star >= 50) && countStars.filter((star) => star >= 50).length >= 1) {
+    if (countStars.filter((star) => star >= 5) && countStars.filter((star) => star >= 5).length >= 1) {
       await user.update({ level: 1 });
 
       return;
