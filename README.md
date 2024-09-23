@@ -1,4 +1,4 @@
-# Star_Trail - Back-End
+# Star Trail - Back-End
 
 In this personal project, I built a social media where people can share and like suggestions of learning paths - which are called "trails".
 
